@@ -1,15 +1,83 @@
 server:
   port: 8081
 
+
+
+
+
+
+
 spring:
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: false
+      retry:
+        enabled: false
+      bulkhead:
+        enabled: false
+
+
   datasource:
     url: jdbc:h2:mem:orderdb
+    driver-class-name: org.h2.Driver
     username: sa
     password:
+user:
+  service:
+    url: http://localhost:8080
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    io.github.resilience4j.retry: DEBUG
+    io.github.resilience4j.circuitbreaker: DEBUG
+    io.github.resilience4j.retry.internal: DEBUG
+
 
 resilience4j:
   retry:
     instances:
       userService:
-        maxAttempts: 3
+        maxAttempts: 2
         waitDuration: 5s
+        retryExceptions:
+          - feign.RetryableException
+          - feign.FeignException
+          - java.net.ConnectException
+          - java.util.concurrent.TimeoutException
+  circuitbreaker:
+    instances:
+      userService:
+        registerHealthIndicator: true
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 3
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+  bulkhead:
+    instances:
+      userService:
+        maxConcurrentCalls: 5
+        maxWaitDuration: 0
+feign:
+  client:
+    config:
+      default:
+        retryer: feign.Retryer$NeverRetry
+
