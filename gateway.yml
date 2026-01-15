@@ -18,8 +18,10 @@ spring:
             - Path=/orders/**
           filters:
             - StripPrefix=1
-
-
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
 eureka:
   client:
     service-url:
