@@ -39,6 +39,9 @@ logging:
     io.github.resilience4j.retry: DEBUG
     io.github.resilience4j.circuitbreaker: DEBUG
     io.github.resilience4j.retry.internal: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},traceId=%X{traceId},spanId=%X{spanId}]"
+
 
 
 resilience4j:
