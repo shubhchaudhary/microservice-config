@@ -30,3 +30,13 @@ eureka:
     prefer-ip-address: true
     hostname: localhost
     ipaddress: localhost
+
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0   # trace every request
+
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
