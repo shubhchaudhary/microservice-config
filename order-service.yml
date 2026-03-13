@@ -33,12 +33,13 @@ spring:
       path: /h2-console
 
 
+  # order-service
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer  # ← fix this (was StringDeserializer)
       properties:
         spring.json.trusted.packages: "*"
     producer:
